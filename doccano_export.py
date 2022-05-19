@@ -57,6 +57,7 @@ def get_span_by_project_id(project_id):
             })
     return e_tmp
 
+
 def get_rel_by_project_id(project_id):
     """根据项目id获取关系标注结果"""
     sql = """
@@ -104,6 +105,16 @@ def get_rel_by_project_id(project_id):
     return e_tmp
 
 
+def show_tables():
+    """查看当前数据库所有的表"""
+    sql = """select name from sqlite_master"""
+    cursor.execute(sql)
+    data = cursor.execute(sql)
+    print("当前所有表：")
+    for d in data:
+        print(d[0])
+
+
 def get_project_id():
     """获取最近更新过的文本及项目id"""
     sql = """
@@ -114,6 +125,8 @@ def get_project_id():
     pprint(data[0])
     return data[0][0]
 
+
+show_tables()
 project_id = get_project_id()
 
 span_data = get_span_by_project_id(project_id)
@@ -124,7 +137,7 @@ relation_data = get_rel_by_project_id(project_id)
 
 res = []
 # 合并要素和关系
-for k,v in relation_data.items():
+for k, v in relation_data.items():
     span_data[k]["relations"] = v["relations"]
     res.append(str(span_data[k]).replace("'", '"'))
 
