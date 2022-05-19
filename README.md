@@ -1,5 +1,5 @@
 # doccano_export
-使用doccano标注工具同时导出实体和关系数据为空的解决办法。标注平台地址：https://github.com/doccano/doccano
+使用doccano标注工具同时导出实体和关系数据为空的解决办法。doccano版本：1.6.2。标注平台地址：https://github.com/doccano/doccano
 
 # 安装
 其实安装挺简单的：
