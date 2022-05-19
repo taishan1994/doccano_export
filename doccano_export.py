@@ -90,15 +90,15 @@ def get_rel_by_project_id(project_id):
                 "id": d[0],
                 "from_id": d[2],
                 "to_id": d[3],
-                "label": d[5]
+                "type": d[5]
             })
             e_tmp[d[1]] = tmp
         else:
             e_tmp[d[1]]["relations"].append({
                 "id": d[0],
-                "start_offset": d[2],
-                "end_offset": d[3],
-                "label": d[5]
+                "from_id": d[2],
+                "to_id": d[3],
+                "type": d[5]
             })
     return e_tmp
 
