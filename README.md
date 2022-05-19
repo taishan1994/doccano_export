@@ -20,6 +20,7 @@ doccano task
 
 # 导出数据
 找到db.sqlite3的位置，替换doccano_export.py里面的，然后替换project_id为自己的项目id。最后执行该文件。在同目录下会生成doccano_ext.json。就可以用于百度的UIE的微调任务了。
+补充：windows用户db.sqlite3在C:\Users\用户名\doccano\，Linux用户在：/home/用户名/doccano/下。
 
 # 使用UIE进行微调
 地址：https://github.com/PaddlePaddle/PaddleNLP/tree/develop/model_zoo/uie
