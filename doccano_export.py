@@ -2,6 +2,7 @@
 连接doccano自带的sqlite3数据库，并生成标注文件
 """
 import sqlite3
+from pprint import pprint
 
 conn = sqlite3.connect(r'C:\Users\Administrator\doccano\db.sqlite3')
 
@@ -103,8 +104,17 @@ def get_rel_by_project_id(project_id):
     return e_tmp
 
 
+def get_project_id():
+    """获取最近更新过的文本及项目id"""
+    sql = """
+        select project_id, text from examples_example order by updated_at desc limit 1
+    """
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    pprint(data[0])
+    return data[0][0]
 
-project_id = 2
+project_id = get_project_id()
 
 span_data = get_span_by_project_id(project_id)
 relation_data = get_rel_by_project_id(project_id)
@@ -116,9 +126,9 @@ res = []
 # 合并要素和关系
 for k,v in relation_data.items():
     span_data[k]["relations"] = v["relations"]
-    res.append(str(span_data[k]))
+    res.append(str(span_data[k]).replace("'", '"'))
 
-with open('./doccano_ext.json.', 'w', encoding="utf-8") as fp:
+with open('./data/doccano_ext.json.', 'w', encoding="utf-8") as fp:
     fp.write("\n".join(res))
 
 cursor.close()
