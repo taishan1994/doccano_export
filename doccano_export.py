@@ -8,31 +8,56 @@ conn = sqlite3.connect(r'C:\Users\Administrator\doccano\db.sqlite3')
 
 cursor = conn.cursor()
 
+# 用于判别是否导出经过验证的，True为导出经过验证的
+confirm = True
 
 def get_span_by_project_id(project_id):
     """根据项目id获取实体识别标注结果"""
-    sql = """
-        with tmp1 AS (
-            SELECT
-                t1.id,
-                t1.text 
+    if confirm:
+        sql = """
+            with tmp1 AS (
+                SELECT
+                    t2.example_id as id,
+                    t1.text 
+                FROM
+                    main.examples_example t1
+                    JOIN examples_examplestate t2 ON t1.id = t2.example_id 
+                WHERE
+                    t1.project_id = {}
+                ) SELECT
+                t1.*,
+                t2.start_offset,
+                t2.end_offset,
+                t2.label_id,
+                t3.text AS label_text,
+                t2.id AS span_id 
             FROM
-                main.examples_example t1
-                JOIN examples_examplestate t2 ON t1.id = t2.example_id 
-            WHERE
-                t1.project_id = {}
-            ) SELECT
-            t1.*,
-            t2.start_offset,
-            t2.end_offset,
-            t2.label_id,
-            t3.text AS label_text,
-            t2.id AS span_id 
-        FROM
-            tmp1 t1
-            JOIN labels_span t2 ON t1.id = t2.example_id
-            JOIN label_types_spantype t3 ON t3.id = t2.label_id    
-    """.format(project_id)
+                tmp1 t1
+                JOIN labels_span t2 ON t1.id = t2.example_id
+                JOIN label_types_spantype t3 ON t3.id = t2.label_id    
+        """.format(project_id)
+    else:
+        sql = """
+            with tmp1 AS (
+                SELECT
+                    t1.id,
+                    t1.text 
+                FROM
+                    main.examples_example t1
+                WHERE
+                    t1.project_id = {}
+                ) SELECT
+                t1.*,
+                t2.start_offset,
+                t2.end_offset,
+                t2.label_id,
+                t3.text AS label_text,
+                t2.id AS span_id 
+            FROM
+                tmp1 t1
+                JOIN labels_span t2 ON t1.id = t2.example_id
+                JOIN label_types_spantype t3 ON t3.id = t2.label_id    
+        """.format(project_id)
     cursor.execute(sql)
     data = cursor.fetchall()
     example_id_set = set()
@@ -60,26 +85,49 @@ def get_span_by_project_id(project_id):
 
 def get_rel_by_project_id(project_id):
     """根据项目id获取关系标注结果"""
-    sql = """
-        with tmp1 AS (
-            SELECT
-                t1.id,
-                t1.example_id,
-                t1.from_id_id,
-                t1.to_id_id,
-                type_id 
+    if confirm:
+        sql = """
+            with tmp1 AS (
+                SELECT
+                    t1.id,
+                    t1.example_id,
+                    t1.from_id_id,
+                    t1.to_id_id,
+                    type_id 
+                FROM
+                    labels_relation t1
+                    JOIN examples_example t2 ON t1.example_id = t2.id 
+                    JOIN examples_examplestate t3 ON t1.example_id = t3.example_id
+                WHERE
+                    project_id = {}
+                ) SELECT
+                t1.*,
+                t2.text AS relation_text 
             FROM
-                labels_relation t1
-                JOIN examples_example t2 ON t1.example_id = t2.id 
-            WHERE
-                project_id = {}
-            ) SELECT
-            t1.*,
-            t2.text AS relation_text 
-        FROM
-            tmp1 t1
-            JOIN label_types_relationtype t2 ON t1.type_id = t2.id
-    """.format(project_id)
+                tmp1 t1
+                JOIN label_types_relationtype t2 ON t1.type_id = t2.id
+        """.format(project_id)
+    else:
+        sql = """
+            with tmp1 AS (
+                SELECT
+                    t1.id,
+                    t1.example_id,
+                    t1.from_id_id,
+                    t1.to_id_id,
+                    type_id 
+                FROM
+                    labels_relation t1
+                    JOIN examples_example t2 ON t1.example_id = t2.id 
+                WHERE
+                    project_id = {}
+                ) SELECT
+                t1.*,
+                t2.text AS relation_text 
+            FROM
+                tmp1 t1
+                JOIN label_types_relationtype t2 ON t1.type_id = t2.id
+        """.format(project_id)
     cursor.execute(sql)
     data = cursor.fetchall()
     example_id_set = set()
