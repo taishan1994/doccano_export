@@ -10,6 +10,10 @@ cursor = conn.cursor()
 
 # 用于判别是否导出经过验证的，True为导出经过验证的
 confirm = True
+# 用于控制是否导出实体标注
+export_entities = True
+# 用于控制是否导出关系标注
+export_relations = False
 
 def get_span_by_project_id(project_id):
     """根据项目id获取实体识别标注结果"""
@@ -184,10 +188,17 @@ relation_data = get_rel_by_project_id(project_id)
 
 
 res = []
-# 合并要素和关系
-for k, v in relation_data.items():
-    span_data[k]["relations"] = v["relations"]
-    res.append(str(span_data[k]).replace("'", '"'))
+
+if export_entities:
+    if export_relations:
+        # 合并要素和关系
+        for k, v in relation_data.items():
+            span_data[k]["relations"] = v["relations"]
+            res.append(str(span_data[k]).replace("'", '"'))
+
+    else:
+        for k,v in span_data.items():
+            res.append(str(span_data[k]).replace("'", '"'))
 
 with open('./data/doccano_ext.json.', 'w', encoding="utf-8") as fp:
     fp.write("\n".join(res))
