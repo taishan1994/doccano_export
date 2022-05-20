@@ -23,6 +23,7 @@ doccano task
 补充：
 - windows用户db.sqlite3在C:\Users\用户名\doccano\，Linux用户在：/home/用户名/doccano/下（应该是，没有的话自己去其它位置找找）。
 - confirm用于控制是否只导出标记为√的结果。
+- export_relations用于控制是否输出关系标注结果，如不存在关系标注，将其置为False。
 
 # 使用UIE进行微调
 地址：https://github.com/PaddlePaddle/PaddleNLP/tree/develop/model_zoo/uie
