@@ -68,3 +68,5 @@ schema = ['出发地', '目的地', '费用', '时间']
 my_ie = Taskflow("information_extraction", schema=schema, task_path='./checkpoint/model_best')
 pprint(my_ie("城市内交通费7月5日金额114广州至佛山"))
 ```
+# 更新记录
+- 2022-05-20 更新控制是否输出关系标注的结果。
