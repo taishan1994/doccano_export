@@ -10,6 +10,7 @@ doccano init
 # Create a super user.
 doccano createuser --username admin --password pass
 # Start a web server.
+# doccano webserver --port 8000 --workers=8
 doccano webserver --port 8000
 ```
 然后再打开一个命令行：
